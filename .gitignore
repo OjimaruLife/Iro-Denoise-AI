@@ -1,0 +1,13 @@
+# Backup models
+Denoise_nafnet_w64_backup.mlpackage/
+
+# Xcode
+xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+
+# macOS
+.DS_Store
