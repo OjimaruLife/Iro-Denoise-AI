@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var isTargeted = false
     @State private var sliderPosition: Double = 0.5
     @State private var showComparison = false
+    @State private var sharpenStrength: Double = 30
+    @State private var detailStrength: Double = 80
     @State private var progress: Double = 0.0
 
     // バッチ
@@ -193,12 +195,16 @@ struct ContentView: View {
     // MARK: - Controls
 
     private var controls: some View {
-        VStack(spacing: 14) {
-            HStack {
-                Text("強度")
-                Slider(value: $strength, in: 0...1)
-                Text(String(format: "%.0f%%", strength * 100)).frame(width: 60, alignment: .trailing)
-            }
+        VStack(spacing: 12) {
+            DialControlPanel(
+                denoiseStrength: Binding(
+                    get: { strength * 100 },
+                    set: { strength = $0 / 100 }
+                ),
+                sharpenStrength: $sharpenStrength,
+                detailStrength:  $detailStrength
+            )
+
             HStack(spacing: 12) {
                 if isBatchMode {
                     Button("ファイルを選択") { openBatchPanel() }
