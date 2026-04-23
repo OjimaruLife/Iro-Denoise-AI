@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E98B1B412F99BC8800F7767B /* DenoiseRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98B1B3D2F99BC8800F7767B /* DenoiseRunner.swift */; };
+		E98B1B432F99BC8800F7767B /* IroDenoiseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98B1B3F2F99BC8800F7767B /* IroDenoiseApp.swift */; };
+		E98B1B512F99C55B00F7767B /* Denoise.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = E98B1B502F99C55B00F7767B /* Denoise.mlpackage */; };
+		E98B1B552F9A20A700F7767B /* ImageIOHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98B1B532F99C7D500F7767B /* ImageIOHelper.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E98B1B202F99BBE400F7767B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +34,10 @@
 		E98B1B122F99BBE300F7767B /* IroDenoise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IroDenoise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E98B1B1F2F99BBE400F7767B /* IroDenoiseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IroDenoiseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E98B1B292F99BBE400F7767B /* IroDenoiseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IroDenoiseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E98B1B3D2F99BC8800F7767B /* DenoiseRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenoiseRunner.swift; sourceTree = "<group>"; };
+		E98B1B3F2F99BC8800F7767B /* IroDenoiseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IroDenoiseApp.swift; sourceTree = "<group>"; };
+		E98B1B502F99C55B00F7767B /* Denoise.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = Denoise.mlpackage; sourceTree = "<group>"; };
+		E98B1B532F99C7D500F7767B /* ImageIOHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageIOHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,12 +90,16 @@
 				E98B1B222F99BBE400F7767B /* IroDenoiseTests */,
 				E98B1B2C2F99BBE400F7767B /* IroDenoiseUITests */,
 				E98B1B132F99BBE300F7767B /* Products */,
+				E98B1B3D2F99BC8800F7767B /* DenoiseRunner.swift */,
+				E98B1B3F2F99BC8800F7767B /* IroDenoiseApp.swift */,
+				E98B1B502F99C55B00F7767B /* Denoise.mlpackage */,
 			);
 			sourceTree = "<group>";
 		};
 		E98B1B132F99BBE300F7767B /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				E98B1B532F99C7D500F7767B /* ImageIOHelper.swift */,
 				E98B1B122F99BBE300F7767B /* IroDenoise.app */,
 				E98B1B1F2F99BBE400F7767B /* IroDenoiseTests.xctest */,
 				E98B1B292F99BBE400F7767B /* IroDenoiseUITests.xctest */,
@@ -236,6 +251,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E98B1B552F9A20A700F7767B /* ImageIOHelper.swift in Sources */,
+				E98B1B512F99C55B00F7767B /* Denoise.mlpackage in Sources */,
+				E98B1B412F99BC8800F7767B /* DenoiseRunner.swift in Sources */,
+				E98B1B432F99BC8800F7767B /* IroDenoiseApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,10 +409,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Iro Denoise AI";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -432,10 +451,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Iro Denoise AI";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
