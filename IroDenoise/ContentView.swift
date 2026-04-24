@@ -25,33 +25,51 @@ struct ContentView: View {
     private let runner = DenoiseRunner()
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
             header
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 8)
+            
 
-            if isBatchMode {
-                batchPanel
-            } else {
-                if showComparison, let original = originalImage, let processed = processedImage {
-                    ComparisonCanvas(
-                        originalImage: original,
-                        processedImage: processed,
-                        sliderPosition: $sliderPosition
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.secondary.opacity(0.15), lineWidth: 1))
+            // プレビューエリア（最優先で伸縮）
+            Group {
+                if isBatchMode {
+                    batchPanel
                 } else {
-                    HStack(spacing: 16) {
-                        dropPanel
-                        imagePanel(title: "After", image: processedImage)
+                    if showComparison, let original = originalImage, let processed = processedImage {
+                        GeometryReader { geo in
+                            ComparisonCanvas(
+                                originalImage: original,
+                                processedImage: processed,
+                                sliderPosition: $sliderPosition
+                            )
+                            .frame(width: geo.size.width, height: geo.size.height)
+                            .clipShape(RoundedRectangle(cornerRadius: 18))
+                            .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.secondary.opacity(0.15), lineWidth: 1))
+                        }
+                    } else {
+                        HStack(spacing: 16) {
+                            dropPanel
+                            imagePanel(title: "After", image: processedImage)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: isDialPanelExpanded ? 300 : 200)
+            .frame(maxHeight: .infinity)
+            .layoutPriority(1)
+            .padding(.horizontal, 20)
 
+            // コントロールエリア
             controls
+                .padding(.horizontal, 20)
+                .padding(.bottom, 12)
+                .padding(.top, 6)
         }
-        .padding(20)
+        .frame(minWidth: 600)
     }
 
     // MARK: - Header
@@ -194,18 +212,27 @@ struct ContentView: View {
 
     // MARK: - Controls
 
-    private var controls: some View {
-        VStack(spacing: 12) {
-            DialControlPanel(
-                denoiseStrength: Binding(
-                    get: { strength * 100 },
-                    set: { strength = $0 / 100 }
-                ),
-                sharpenStrength: $sharpenStrength,
-                detailStrength:  $detailStrength
-            )
+    @State private var isDialPanelExpanded: Bool = true
 
+    private var controls: some View {
+        VStack(spacing: 8) {
+
+            // 折りたたみトグル + ボタン行（常に表示）
             HStack(spacing: 12) {
+                // 折りたたみボタン
+                Button(action: {
+                    withAnimation(.spring(response: 0.3)) {
+                        isDialPanelExpanded.toggle()
+                    }
+                }) {
+                    Image(systemName: isDialPanelExpanded ? "chevron.down.circle" : "chevron.right.circle")
+                        .font(.system(size: 16))
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+
+                Divider().frame(height: 16)
+
                 if isBatchMode {
                     Button("ファイルを選択") { openBatchPanel() }
                     Button(outputFolder == nil ? "保存先: 元と同じ" : "保存先: " + (outputFolder!.lastPathComponent)) { selectOutputFolder() }
@@ -234,7 +261,32 @@ struct ContentView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                if !isProcessing { Text(statusText).foregroundStyle(.secondary).lineLimit(2) }
+                if !isProcessing {
+                    if progress >= 1.0 {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                            Text("SUCCESS")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(.green)
+                        }
+                    } else {
+                        Text(statusText).foregroundStyle(.secondary).lineLimit(2)
+                    }
+                }
+            }
+
+            // ダイヤルパネル（折りたたみ可能）
+            if isDialPanelExpanded {
+                DialControlPanel(
+                    denoiseStrength: Binding(
+                        get: { strength * 100 },
+                        set: { strength = $0 / 100 }
+                    ),
+                    sharpenStrength: $sharpenStrength,
+                    detailStrength:  $detailStrength
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
     }

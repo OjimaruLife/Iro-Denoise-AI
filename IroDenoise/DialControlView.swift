@@ -88,13 +88,29 @@ struct AppTheme {
         bodyBg:         Color(hex: "111014")
     )
 
-    static let all: [AppTheme] = [.amber, .blue, .green, .red, .purple]
+    static let white = AppTheme(
+        name: "WHITE",
+        accentColor:    Color(hex: "222222"),
+        dialOuter:      Color(hex: "e8e8e8"),
+        dialOuterBorder:Color(hex: "aaaaaa"),
+        dialInner:      Color(hex: "f0f0f0"),
+        dialInnerBorder:Color(hex: "cccccc"),
+        lcdBg:          Color(hex: "f5f5f5"),
+        lcdBorder:      Color(hex: "cccccc"),
+        lcdTitle:       Color(hex: "333333"),
+        lcdDim:         Color(hex: "888888"),
+        lcdBright:      Color(hex: "222222"),
+        bodyBg:         Color(hex: "e0e0e0")
+    )
+
+    static let all: [AppTheme] = [.amber, .blue, .green, .red, .purple, .white]
     static let themeColors: [Color] = [
         Color(hex: "c87020"),
         Color(hex: "1a5aaa"),
         Color(hex: "1a7a40"),
         Color(hex: "8a1a1a"),
         Color(hex: "5a1a9a"),
+        Color(hex: "cccccc"),
     ]
 }
 
@@ -118,44 +134,41 @@ struct RotaryDial: View {
     @Binding var value: Double
     let defaultValue: Double
     let theme: AppTheme
+    var scale: CGFloat = 1.0
 
     @State private var isDragging = false
     @State private var dragStartY: CGFloat = 0
     @State private var dragStartValue: Double = 0
 
     private var angle: Double { -135 + value * 2.7 }
+    private var size: CGFloat { 96 * scale }
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 6 * scale) {
             ZStack {
-                // Outer ring
                 Circle()
                     .fill(theme.dialOuter)
-                    .overlay(Circle().stroke(theme.dialOuterBorder, lineWidth: 3))
-                    .frame(width: 96, height: 96)
+                    .overlay(Circle().stroke(theme.dialOuterBorder, lineWidth: 3 * scale))
+                    .frame(width: size, height: size)
 
-                // Tick marks
                 DialTicks(theme: theme)
-                    .frame(width: 96, height: 96)
+                    .frame(width: size, height: size)
 
-                // Inner ring
                 Circle()
                     .fill(theme.dialInner)
                     .overlay(Circle().stroke(theme.dialInnerBorder, lineWidth: 1))
-                    .frame(width: 84, height: 84)
+                    .frame(width: size * 0.875, height: size * 0.875)
 
-                // Indicator line
                 Rectangle()
                     .fill(theme.accentColor)
-                    .frame(width: 3, height: 18)
-                    .offset(y: -33)
+                    .frame(width: 3 * scale, height: 18 * scale)
+                    .offset(y: -33 * scale)
                     .rotationEffect(.degrees(angle))
 
-                // Center reset button
                 Circle()
                     .fill(theme.dialInner)
                     .overlay(Circle().stroke(theme.dialOuterBorder, lineWidth: 2))
-                    .frame(width: 18, height: 18)
+                    .frame(width: 18 * scale, height: 18 * scale)
                     .onTapGesture {
                         withAnimation(.spring(response: 0.3)) {
                             value = defaultValue
@@ -166,9 +179,9 @@ struct RotaryDial: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { g in
                         if !isDragging {
-                            isDragging      = true
-                            dragStartY      = g.location.y
-                            dragStartValue  = value
+                            isDragging     = true
+                            dragStartY     = g.location.y
+                            dragStartValue = value
                         }
                         let delta = (dragStartY - g.location.y) * 0.8
                         value = max(0, min(100, dragStartValue + delta))
@@ -177,12 +190,12 @@ struct RotaryDial: View {
             )
 
             Text(label)
-                .font(.system(size: 10, design: .monospaced))
+                .font(.system(size: max(8, 10 * scale), design: .monospaced))
                 .foregroundColor(theme.dialDim)
                 .tracking(2)
 
             Text("\(Int(value))")
-                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                .font(.system(size: max(9, 12 * scale), weight: .bold, design: .monospaced))
                 .foregroundColor(theme.accentColor)
         }
     }
@@ -209,9 +222,10 @@ struct DialTicks: View {
                 let tx  = c.x + (r - 14) * cos(rad)
                 let ty  = c.y + (r - 14) * sin(rad)
                 var attrs = AttributedString(text)
-                attrs.font = .init(.monospacedSystemFont(ofSize: 6, weight: .regular))
+                attrs.font = .init(.systemFont(ofSize: 6))
                 attrs.foregroundColor = NSColor(color)
-                ctx.draw(Text(attrs), at: CGPoint(x: tx, y: ty))
+                let t = Text(attrs)
+                ctx.draw(t, at: CGPoint(x: tx, y: ty))
             }
 
             let tickAngles: [Double] = [90, 36, -18, -72, -126,
@@ -316,7 +330,7 @@ struct LCDStatusBar: View {
         HStack {
             Text(message)
                 .font(.system(size: 9, design: .monospaced))
-                .foregroundColor(theme.lcdDim)
+                .foregroundColor(theme.lcdBright.opacity(0.7))
                 .tracking(1)
                 .lineLimit(1)
             Spacer()
@@ -364,7 +378,7 @@ struct DialControlPanel: View {
     private var theme: AppTheme { AppTheme.all[themeIndex] }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 8) {
 
             // Theme label + switcher
             Text(theme.name)
@@ -422,7 +436,7 @@ struct DialControlPanel: View {
                             .foregroundColor(theme.accentColor)
                         Text("STRENGTH")
                             .font(.system(size: 9, design: .monospaced))
-                            .foregroundColor(theme.lcdDim)
+                            .foregroundColor(theme.lcdBright.opacity(0.7))
                             .tracking(1)
                     }
                     Spacer()
@@ -464,7 +478,8 @@ struct DialControlPanel: View {
                     .allowsHitTesting(false)
             )
         }
-        .padding(20)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
         .background(theme.bodyBg)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
@@ -473,7 +488,7 @@ struct DialControlPanel: View {
         VStack(alignment: .leading, spacing: 3) {
             Text(label)
                 .font(.system(size: 9, design: .monospaced))
-                .foregroundColor(theme.lcdDim)
+                .foregroundColor(theme.lcdBright.opacity(0.7))
                 .tracking(1)
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -493,17 +508,17 @@ struct DialControlPanel: View {
     private func lcdButton(_ label: String, primary: Bool = false, small: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)
-                .font(.system(size: small ? 9 : 10, design: .monospaced))
-                .foregroundColor(primary ? theme.accentColor : theme.lcdDim)
+                .font(.system(size: small ? 10 : 11, design: .monospaced))
+                .foregroundColor(primary ? theme.accentColor : theme.lcdBright.opacity(0.85))
                 .tracking(1)
-                .padding(.horizontal, small ? 6 : 8)
-                .padding(.vertical, 6)
+                .padding(.horizontal, small ? 8 : 10)
+                .padding(.vertical, 7)
         }
         .buttonStyle(.plain)
-        .background(theme.lcdBg)
+        .background(primary ? theme.lcdBright.opacity(0.12) : theme.lcdBg)
         .overlay(
             RoundedRectangle(cornerRadius: 4)
-                .stroke(primary ? theme.accentColor.opacity(0.7) : theme.lcdDim.opacity(0.3))
+                .stroke(primary ? theme.accentColor.opacity(0.9) : theme.lcdBright.opacity(0.35))
         )
         .clipShape(RoundedRectangle(cornerRadius: 4))
     }

@@ -7,7 +7,7 @@ struct IroDenoiseApp: App {
             ContentView()
         }
         .windowStyle(.titleBar)
-        .defaultSize(width: 1200, height: 780)
+        .defaultSize(width: 1200, height: 960)
         .commands {
             CommandGroup(replacing: .help) {
                 Button("Iro Denoise AI ヘルプ") {
