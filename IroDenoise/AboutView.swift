@@ -16,7 +16,7 @@ struct AboutView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Iro Denoise AI")
                             .font(.system(size: 24, weight: .semibold))
-                        Text("Version 1.0.0")
+                        Text("Version 1.2.1")
                             .foregroundStyle(.secondary)
                         Text("© 2026 OJIMARU")
                             .foregroundStyle(.secondary)

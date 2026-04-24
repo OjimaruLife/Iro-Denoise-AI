@@ -289,7 +289,13 @@ class WaveformNSView: NSView {
 
     override func removeFromSuperview() {
         timer?.invalidate()
+        timer = nil
         super.removeFromSuperview()
+    }
+
+    deinit {
+        timer?.invalidate()
+        timer = nil
     }
 
     override func draw(_ dirtyRect: NSRect) {
